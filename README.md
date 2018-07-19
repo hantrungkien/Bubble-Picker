@@ -31,7 +31,7 @@ dependencies {
 
 ## How to use this library
 
-This library is developed and extended based on https://github.com/igalata/Bubble-Picker
+This library was developed and extended based on https://github.com/igalata/Bubble-Picker
 
 Now: 
 - We can set Picker Item selected always is true   
