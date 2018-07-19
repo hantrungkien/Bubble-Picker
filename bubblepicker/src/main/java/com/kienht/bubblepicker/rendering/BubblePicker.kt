@@ -24,7 +24,7 @@ class BubblePicker : GLSurfaceView {
             renderer.backgroundColor = Color(value)
         }
 
-    var datas: ArrayList<PickerItem>? = null
+    var datas: List<PickerItem>? = null
         set(value) {
             field = value
             renderer.items = value ?: ArrayList()
