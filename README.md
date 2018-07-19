@@ -82,14 +82,16 @@ Kotlin
 ```kotlin
 override fun onResume() {
         super.onResume()
-        if (!picker.isResumed) {
+        if (!picker.isStarted) {
             picker.onResume()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        picker.onPause()
+       if (picker.isStarted) {
+            picker.onPause()
+       }
     }
 ```
 
@@ -98,15 +100,17 @@ Java
 @Override
 protected void onResume() {
       super.onResume();
-        if (!picker.isResumed()) {
-            picker.onResume();
+         if (mBubblePicker.isStarted()) {
+            mBubblePicker.onResume();
         }
 }
 
 @Override
 protected void onPause() {
       super.onPause();
-      picker.onPause();
+       if (mBubblePicker.isStarted()) {
+            mBubblePicker.onPause();
+        }
 }
 ```
 
