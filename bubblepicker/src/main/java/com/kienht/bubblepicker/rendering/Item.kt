@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
+import android.text.TextUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target.SIZE_ORIGINAL
@@ -74,7 +75,7 @@ data class Item(val context: WeakReference<Context>, val pickerItem: PickerItem,
     }
 
     private fun createBitmap(isSelected: Boolean): Bitmap {
-        var bitmap = if (pickerItem.isUseImgUrl) {
+        var bitmap = if (!TextUtils.isEmpty(pickerItem.imgUrl) && pickerItem.isUseImgUrl) {
             Glide.with(context.get())
                     .load(pickerItem.imgUrl)
                     .asBitmap()
@@ -91,7 +92,7 @@ data class Item(val context: WeakReference<Context>, val pickerItem: PickerItem,
 
         val canvas = Canvas(bitmap)
 
-        if (isSelected && !pickerItem.isUseImgUrl) {
+        if (isSelected && !pickerItem.isUseImgUrl || TextUtils.isEmpty(pickerItem.imgUrl)) {
             drawImage(canvas)
         }
         drawBackground(canvas, isSelected)

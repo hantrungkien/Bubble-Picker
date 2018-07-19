@@ -1,8 +1,11 @@
 package com.kienht.bubble_picker
 
+import android.content.res.TypedArray
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.widget.Toast
 import com.kienht.bubblepicker.BubblePickerListener
 import com.kienht.bubblepicker.adapter.BubblePickerAdapter
@@ -16,15 +19,17 @@ import kotlinx.android.synthetic.main.activity_main.*
  */
 class MainActivity : AppCompatActivity() {
 
+    lateinit var images: TypedArray
+    lateinit var colors: TypedArray
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val titles = resources.getStringArray(R.array.countries)
-        val colors = resources.obtainTypedArray(R.array.colors)
-        val images = resources.obtainTypedArray(R.array.images)
+        colors = resources.obtainTypedArray(R.array.colors)
+        images = resources.obtainTypedArray(R.array.images)
 
-        picker.isAlwaysSelected = false
         picker.adapter = object : BubblePickerAdapter {
             override val totalCount = titles.size
 
@@ -33,14 +38,9 @@ class MainActivity : AppCompatActivity() {
                     title = titles[position]
                     gradient = BubbleGradient(colors.getColor((position * 2) % 8, 0),
                             colors.getColor((position * 2) % 8 + 1, 0), BubbleGradient.VERTICAL)
-                    isUseImgUrl = false
-                    imgDrawable = ContextCompat.getDrawable(this@MainActivity, images.getResourceId(position, 0))
                 }
             }
         }
-
-        colors.recycle()
-        images.recycle()
 
         picker.bubbleSize = 10
         picker.listener = object : BubblePickerListener {
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!picker.isResumed) {
+        if (picker.isStarted) {
             picker.onResume()
         }
     }
@@ -64,6 +64,12 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         picker.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        colors.resources
+        images.resources
     }
 
     private fun toast(text: String) = Toast.makeText(this, text, Toast.LENGTH_SHORT).show()

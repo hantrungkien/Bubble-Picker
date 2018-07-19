@@ -31,7 +31,7 @@ class BubblePicker : GLSurfaceView {
             onResume()
         }
 
-    val isResumed: Boolean = datas != null
+    val isStarted: Boolean = datas != null
 
     var adapter: BubblePickerAdapter? = null
         set(value) {
