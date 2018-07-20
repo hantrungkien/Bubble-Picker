@@ -24,7 +24,7 @@ allprojects {
 Add the dependency:
 ```Groovy
 dependencies {
-	implementation 'com.github.hantrungkien:Bubble-Picker:v1.0.5'
+	implementation 'com.github.hantrungkien:Bubble-Picker:v1.0.5.2'
 }
 ```
 
