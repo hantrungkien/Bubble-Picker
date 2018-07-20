@@ -1,7 +1,6 @@
 package com.kienht.bubblepicker.rendering
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.opengl.GLES20.*
@@ -10,7 +9,6 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
-import com.bumptech.glide.Glide
 import com.kienht.bubblepicker.model.BubbleGradient
 import com.kienht.bubblepicker.model.PickerItem
 import com.kienht.bubblepicker.physics.CircleBody
@@ -19,8 +17,14 @@ import com.kienht.bubblepicker.toTexture
 import org.jbox2d.common.Vec2
 import java.lang.ref.WeakReference
 import android.graphics.Bitmap
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.kienht.bubblepicker.resizeBitmap
+import com.nostra13.universalimageloader.core.ImageLoader
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer
+import com.nostra13.universalimageloader.core.assist.ImageScaleType
+import com.nostra13.universalimageloader.core.DisplayImageOptions
+import com.nostra13.universalimageloader.core.assist.ImageSize
 
 
 /**
@@ -84,14 +88,25 @@ data class Item(val context: WeakReference<Context>,
 
     private fun createBitmap(isSelected: Boolean): Bitmap {
         var bitmap = if (!TextUtils.isEmpty(pickerItem.imgUrl) && pickerItem.isUseImgUrl) {
-            val bmLoaded = Glide.with(context.get())
-                    .load(pickerItem.imgUrl)
-                    .asBitmap()
-                    .skipMemoryCache(true)
-                    .into(bitmapSize.toInt() / 2, bitmapSize.toInt() / 2)
-                    .get()
 
-            bmLoaded.resizeBitmap(bitmapSize.toInt(), bitmapSize.toInt())
+            val imageLoader = ImageLoader.getInstance()
+
+            val defaultOptions = DisplayImageOptions.Builder()
+                    .cacheInMemory(true)
+                    .imageScaleType(ImageScaleType.EXACTLY)
+                    .bitmapConfig(Bitmap.Config.RGB_565)
+                    .build()
+
+            val config = ImageLoaderConfiguration.Builder(context.get())
+                    .defaultDisplayImageOptions(defaultOptions)
+                    .memoryCache(WeakMemoryCache())
+                    .build()
+
+            imageLoader.init(config)
+
+            val bmp = imageLoader.loadImageSync(pickerItem.imgUrl, ImageSize(bitmapSize.toInt() / 2, bitmapSize.toInt() /2))
+
+            bmp.resizeBitmap(bitmapSize.toInt(), bitmapSize.toInt())
         } else {
             Bitmap.createBitmap(bitmapSize.toInt(), bitmapSize.toInt(), Bitmap.Config.ARGB_4444)
         }
@@ -108,6 +123,7 @@ data class Item(val context: WeakReference<Context>,
         drawBackground(canvas, isSelected)
         drawIcon(canvas)
         drawText(canvas)
+
         return bitmap
     }
 

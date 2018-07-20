@@ -5,8 +5,6 @@ import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
 import android.util.Log
 import android.view.View
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.kienht.bubblepicker.*
 import com.kienht.bubblepicker.model.Color
 import com.kienht.bubblepicker.model.PickerItem
