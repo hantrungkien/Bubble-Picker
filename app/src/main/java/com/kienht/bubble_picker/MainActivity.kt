@@ -56,9 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (picker.isStarted) {
-            picker.onResume()
-        }
+        picker.onResume()
     }
 
     override fun onPause() {

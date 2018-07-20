@@ -5,6 +5,7 @@ import android.graphics.PixelFormat
 import android.opengl.GLSurfaceView
 import android.support.annotation.ColorInt
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import com.kienht.bubblepicker.BubblePickerListener
 import com.kienht.bubblepicker.R
@@ -16,6 +17,7 @@ import com.kienht.bubblepicker.model.PickerItem
  * Created by irinagalata on 1/19/17.
  */
 class BubblePicker : GLSurfaceView {
+    val renderer = PickerRenderer(this)
 
     @ColorInt
     var background: Int = 0
@@ -24,14 +26,28 @@ class BubblePicker : GLSurfaceView {
             renderer.backgroundColor = Color(value)
         }
 
-    var datas: List<PickerItem>? = null
+    var isStarted: Boolean = false
+
+    var datas: List<PickerItem> = ArrayList()
         set(value) {
             field = value
-            renderer.items = value ?: ArrayList()
+            renderer.items = value
             onResume()
         }
 
-    val isStarted: Boolean = datas != null
+    override fun onResume() {
+        if (!isStarted && renderer.items.isNotEmpty()) {
+            super.onResume()
+            isStarted = true
+        }
+    }
+
+    override fun onPause() {
+        if (isStarted && renderer.items.isNotEmpty()) {
+            super.onPause()
+            isStarted = false
+        }
+    }
 
     var adapter: BubblePickerAdapter? = null
         set(value) {
@@ -42,20 +58,24 @@ class BubblePicker : GLSurfaceView {
                 onResume()
             }
         }
+
     var maxSelectedCount: Int? = null
         set(value) {
             renderer.maxSelectedCount = value
         }
+
     var listener: BubblePickerListener? = null
         set(value) {
             renderer.listener = value
         }
+
     var bubbleSize = 50
         set(value) {
             if (value in 1..100) {
                 renderer.bubbleSize = value
             }
         }
+
     val selectedItems: List<PickerItem?>
         get() = renderer.selectedItems
 
@@ -65,7 +85,6 @@ class BubblePicker : GLSurfaceView {
             renderer.centerImmediately = value
         }
 
-    val renderer = PickerRenderer(this)
     private var startX = 0f
     private var startY = 0f
     private var previousX = 0f
