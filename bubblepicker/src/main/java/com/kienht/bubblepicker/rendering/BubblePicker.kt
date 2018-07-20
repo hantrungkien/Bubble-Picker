@@ -7,6 +7,7 @@ import android.support.annotation.ColorInt
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
 import com.kienht.bubblepicker.BubblePickerListener
 import com.kienht.bubblepicker.R
 import com.kienht.bubblepicker.adapter.BubblePickerAdapter
@@ -16,8 +17,8 @@ import com.kienht.bubblepicker.model.PickerItem
 /**
  * Created by irinagalata on 1/19/17.
  */
-class BubblePicker : GLSurfaceView {
-    val renderer = PickerRenderer(this)
+class BubblePicker(context: Context?, attrs: AttributeSet?) : GLSurfaceView(context, attrs) {
+    private lateinit var renderer: PickerRenderer
 
     @ColorInt
     var background: Int = 0
@@ -26,37 +27,21 @@ class BubblePicker : GLSurfaceView {
             renderer.backgroundColor = Color(value)
         }
 
-    var isStarted: Boolean = false
-
     var datas: List<PickerItem> = ArrayList()
         set(value) {
             field = value
-            renderer.items = value
+            renderer.pickerList = value
             onResume()
         }
-
-    override fun onResume() {
-        if (!isStarted && renderer.items != null && renderer.items!!.isNotEmpty()) {
-            super.onResume()
-            isStarted = true
-        }
-    }
-
-    override fun onPause() {
-        if (isStarted && renderer.items!!.isNotEmpty()) {
-            super.onPause()
-            isStarted = false
-        }
-    }
 
     var adapter: BubblePickerAdapter? = null
         set(value) {
             field = value
             if (value != null) {
-                renderer.items = ArrayList((0 until value.totalCount)
+                renderer.pickerList = ArrayList((0 until value.totalCount)
                         .map { value.getItem(it) }.toList())
-                onResume()
             }
+            onResume()
         }
 
     var maxSelectedCount: Int? = null
@@ -85,26 +70,31 @@ class BubblePicker : GLSurfaceView {
             renderer.centerImmediately = value
         }
 
-    private var startX = 0f
-    private var startY = 0f
-    private var previousX = 0f
-    private var previousY = 0f
     var isAlwaysSelected = true
         set(value) {
             field = value
             renderer.isAlwaysSelected = value
         }
 
-    constructor(context: Context?) : this(context, null)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {
+    private var startX = 0f
+    private var startY = 0f
+    private var previousX = 0f
+    private var previousY = 0f
+
+    init {
+        init()
+        attrs?.let { retrieveAttrubutes(attrs) }
+    }
+
+    private fun init() {
+        renderer = PickerRenderer(this)
+
         setZOrderOnTop(true)
         setEGLContextClientVersion(2)
         setEGLConfigChooser(8, 8, 8, 8, 16, 0)
         holder.setFormat(PixelFormat.RGBA_8888)
         setRenderer(renderer)
         renderMode = RENDERMODE_CONTINUOUSLY
-        attrs?.let { retrieveAttrubutes(attrs) }
-
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -152,6 +142,18 @@ class BubblePicker : GLSurfaceView {
         }
 
         array.recycle()
+    }
+
+    override fun onResume() {
+        if (renderer.pickerList.isNotEmpty()) {
+            super.onResume()
+        }
+    }
+
+    override fun onPause() {
+        if (renderer.pickerList.isNotEmpty()) {
+            super.onPause()
+        }
     }
 
 }

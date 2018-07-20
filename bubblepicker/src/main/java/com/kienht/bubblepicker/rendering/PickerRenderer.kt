@@ -3,6 +3,7 @@ package com.kienht.bubblepicker.rendering
 import android.opengl.GLES20
 import android.opengl.GLES20.*
 import android.opengl.GLSurfaceView
+import android.util.Log
 import android.view.View
 import com.kienht.bubblepicker.*
 import com.kienht.bubblepicker.model.Color
@@ -16,7 +17,6 @@ import com.kienht.bubblepicker.rendering.BubbleShader.vertexShader
 import org.jbox2d.common.Vec2
 import java.lang.ref.WeakReference
 import java.nio.FloatBuffer
-import java.util.*
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 import kotlin.collections.ArrayList
@@ -46,7 +46,7 @@ class PickerRenderer(val glView: View) : GLSurfaceView.Renderer {
 
     var listener: BubblePickerListener? = null
 
-    var items: List<PickerItem> ?= null
+    var pickerList: List<PickerItem> = ArrayList()
 
     val selectedItems: List<PickerItem?>
         get() = Engine.selectedBodies.map { circles.firstOrNull { circle -> circle.circleBody == it }?.pickerItem }
@@ -89,21 +89,20 @@ class PickerRenderer(val glView: View) : GLSurfaceView.Renderer {
         drawFrame()
     }
 
-    private fun initialize() {
-        if(items == null){
+    fun initialize() {
+        if (pickerList.isEmpty()) {
             return
         }
-
         clear()
 
         Engine.centerImmediately = centerImmediately
 
-        Engine.build(items!!.size, scaleX, scaleY)
+        Engine.build(pickerList.size, scaleX, scaleY)
                 .forEachIndexed { index, body ->
-                    circles.add(Item(WeakReference(glView.context), items!![index], body, isAlwaysSelected))
+                    circles.add(Item(WeakReference(glView.context), pickerList[index], body, isAlwaysSelected))
                 }
 
-        items!!.forEach {
+        pickerList.forEach {
             if (circles.isNotEmpty() && (it.isSelected || isAlwaysSelected)) {
                 Engine.resize(circles.first { circle -> circle.pickerItem == it })
             }
