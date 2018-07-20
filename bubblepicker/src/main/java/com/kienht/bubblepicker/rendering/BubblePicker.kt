@@ -7,6 +7,7 @@ import android.support.annotation.ColorInt
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
+import android.view.SurfaceHolder
 import android.view.View
 import com.kienht.bubblepicker.BubblePickerListener
 import com.kienht.bubblepicker.R
@@ -31,7 +32,7 @@ class BubblePicker(context: Context?, attrs: AttributeSet?) : GLSurfaceView(cont
         set(value) {
             field = value
             renderer.pickerList = value
-            onResume()
+            super.onResume()
         }
 
     var adapter: BubblePickerAdapter? = null
@@ -41,7 +42,7 @@ class BubblePicker(context: Context?, attrs: AttributeSet?) : GLSurfaceView(cont
                 renderer.pickerList = ArrayList((0 until value.totalCount)
                         .map { value.getItem(it) }.toList())
             }
-            onResume()
+            super.onResume()
         }
 
     var maxSelectedCount: Int? = null
@@ -153,6 +154,7 @@ class BubblePicker(context: Context?, attrs: AttributeSet?) : GLSurfaceView(cont
     override fun onPause() {
         if (renderer.pickerList.isNotEmpty()) {
             super.onPause()
+            renderer.clear()
         }
     }
 

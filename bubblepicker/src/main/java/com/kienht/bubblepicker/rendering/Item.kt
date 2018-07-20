@@ -1,6 +1,7 @@
 package com.kienht.bubblepicker.rendering
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.opengl.GLES20.*
@@ -10,8 +11,6 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.kienht.bubblepicker.model.BubbleGradient
 import com.kienht.bubblepicker.model.PickerItem
 import com.kienht.bubblepicker.physics.CircleBody
@@ -19,11 +18,16 @@ import com.kienht.bubblepicker.rendering.BubbleShader.U_MATRIX
 import com.kienht.bubblepicker.toTexture
 import org.jbox2d.common.Vec2
 import java.lang.ref.WeakReference
+import android.graphics.Bitmap
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.kienht.bubblepicker.resizeBitmap
+
 
 /**
  * Created by irinagalata on 1/19/17.
  */
-data class Item(val context: WeakReference<Context>, val pickerItem: PickerItem, val circleBody: CircleBody, val isAlwaysSelected: Boolean) {
+data class Item(val context: WeakReference<Context>,
+                val pickerItem: PickerItem, val circleBody: CircleBody, val isAlwaysSelected: Boolean) {
 
     val x: Float
         get() = circleBody.physicalBody.position.x
@@ -80,12 +84,14 @@ data class Item(val context: WeakReference<Context>, val pickerItem: PickerItem,
 
     private fun createBitmap(isSelected: Boolean): Bitmap {
         var bitmap = if (!TextUtils.isEmpty(pickerItem.imgUrl) && pickerItem.isUseImgUrl) {
-            Glide.with(context.get())
-                    .load("https://avatar-nct.nixcdn.com/playlist/2017/04/09/9/8/9/4/1491713063467_500.jpg")
+            val bmLoaded = Glide.with(context.get())
+                    .load(pickerItem.imgUrl)
                     .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(true)
                     .into(bitmapSize.toInt() / 2, bitmapSize.toInt() / 2)
                     .get()
+
+            bmLoaded.resizeBitmap(bitmapSize.toInt(), bitmapSize.toInt())
         } else {
             Bitmap.createBitmap(bitmapSize.toInt(), bitmapSize.toInt(), Bitmap.Config.ARGB_4444)
         }

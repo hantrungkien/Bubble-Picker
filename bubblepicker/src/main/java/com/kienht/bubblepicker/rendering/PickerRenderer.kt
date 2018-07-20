@@ -196,7 +196,7 @@ class PickerRenderer(val glView: View) : GLSurfaceView.Renderer {
         }
     }
 
-    private fun clear() {
+    fun clear() {
         circles.clear()
         Engine.clear()
     }
