@@ -117,7 +117,7 @@ For more usage examples please review the sample app
 
 ## Thanks
 
-A special thanks go to [Mr. Igalata] (https://github.com/igalata)
+A special thanks go to [Mr. Igalata](https://github.com/igalata)
 
 ## Known iOS versions of the animation
 
