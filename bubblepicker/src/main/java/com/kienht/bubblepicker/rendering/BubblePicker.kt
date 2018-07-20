@@ -36,14 +36,14 @@ class BubblePicker : GLSurfaceView {
         }
 
     override fun onResume() {
-        if (!isStarted && renderer.items.isNotEmpty()) {
+        if (!isStarted && renderer.items != null && renderer.items!!.isNotEmpty()) {
             super.onResume()
             isStarted = true
         }
     }
 
     override fun onPause() {
-        if (isStarted && renderer.items.isNotEmpty()) {
+        if (isStarted && renderer.items!!.isNotEmpty()) {
             super.onPause()
             isStarted = false
         }

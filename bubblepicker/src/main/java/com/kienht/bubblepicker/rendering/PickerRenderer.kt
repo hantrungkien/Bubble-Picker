@@ -33,18 +33,24 @@ class PickerRenderer(val glView: View) : GLSurfaceView.Renderer {
         }
 
     var backgroundColor: Color? = null
+
     var maxSelectedCount: Int? = null
         set(value) {
             Engine.maxSelectedCount = value
         }
+
     var bubbleSize = 50
         set(value) {
             Engine.radius = value
         }
+
     var listener: BubblePickerListener? = null
-    var items: List<PickerItem> = ArrayList()
+
+    var items: List<PickerItem> ?= null
+
     val selectedItems: List<PickerItem?>
         get() = Engine.selectedBodies.map { circles.firstOrNull { circle -> circle.circleBody == it }?.pickerItem }
+
     var centerImmediately = false
         set(value) {
             field = value
@@ -60,8 +66,10 @@ class PickerRenderer(val glView: View) : GLSurfaceView.Renderer {
 
     private val scaleX: Float
         get() = if (glView.width < glView.height) glView.height.toFloat() / glView.width.toFloat() else 1f
+
     private val scaleY: Float
         get() = if (glView.width < glView.height) 1f else glView.width.toFloat() / glView.height.toFloat()
+
     private val circles = ArrayList<Item>()
 
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
@@ -82,17 +90,28 @@ class PickerRenderer(val glView: View) : GLSurfaceView.Renderer {
     }
 
     private fun initialize() {
+        if(items == null){
+            return
+        }
+
         clear()
+
         Engine.centerImmediately = centerImmediately
-        Engine.build(items.size, scaleX, scaleY).forEachIndexed { index, body ->
-            circles.add(Item(WeakReference(glView.context), items[index], body, isAlwaysSelected))
+
+        Engine.build(items!!.size, scaleX, scaleY)
+                .forEachIndexed { index, body ->
+                    circles.add(Item(WeakReference(glView.context), items!![index], body, isAlwaysSelected))
+                }
+
+        items!!.forEach {
+            if (circles.isNotEmpty() && (it.isSelected || isAlwaysSelected)) {
+                Engine.resize(circles.first { circle -> circle.pickerItem == it })
+            }
         }
-        items.forEach {
-            if (it.isSelected || isAlwaysSelected) Engine.resize(circles.first { circle ->
-                circle.pickerItem == it
-            })
+
+        if (textureIds == null) {
+            textureIds = IntArray(circles.size * 2)
         }
-        if (textureIds == null) textureIds = IntArray(circles.size * 2)
         initializeArrays()
     }
 
