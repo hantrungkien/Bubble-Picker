@@ -48,6 +48,17 @@ picker.isAlwaysSelected = false
 mBubblePicker.setAlwaysSelected(true);
 
 ```
+
+- We can set swipe move speed value (default = 1.5f)
+```
+picker.swipeMoveSpeed = 2f
+
+//or
+
+mBubblePicker.setSwipeMoveSpeed(2f);
+
+```
+
 - [Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader): Load image from url
 
 ```
