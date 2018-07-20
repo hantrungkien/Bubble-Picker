@@ -1,6 +1,5 @@
 # Bubble-Picker
 
-[![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat)]()
 [![](https://jitpack.io/v/hantrungkien/Bubble-Picker.svg)](https://jitpack.io/#hantrungkien/Bubble-Picker)
 
 Read how we did it [on Medium](https://medium.com/@igalata13/how-to-create-a-bubble-selection-animation-on-android-627044da4854#.ajonc010b)
@@ -25,7 +24,7 @@ allprojects {
 Add the dependency:
 ```Groovy
 dependencies {
-	implementation 'com.github.hantrungkien:Bubble-Picker:v1.0.2'
+	implementation 'com.github.hantrungkien:Bubble-Picker:v1.0.5'
 }
 ```
 
@@ -43,7 +42,9 @@ picker.isAlwaysSelected = false
 mBubblePicker.setAlwaysSelected(true);
 
 ```
-- Glide: Load image from url
+- [Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader): Load image from url
+
+Please review Activity in the Sample for both cases Sync Data or Async Data
 
 ```
 
@@ -74,104 +75,6 @@ Add `BubblePicker` to your xml layout
         app:backgroundColor="@android:color/white" />
 
 </LinearLayout>
-```
-
-Override onResume() and onPause() methods to call the same methods from the `BubblePicker`
-
-Kotlin
-```kotlin
-override fun onResume() {
-        super.onResume()
-        if (!picker.isStarted) {
-            picker.onResume()
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-       if (picker.isStarted) {
-            picker.onPause()
-       }
-    }
-```
-
-Java
-```java
-@Override
-protected void onResume() {
-      super.onResume();
-         if (mBubblePicker.isStarted()) {
-            mBubblePicker.onResume();
-        }
-}
-
-@Override
-protected void onPause() {
-      super.onPause();
-       if (mBubblePicker.isStarted()) {
-            mBubblePicker.onPause();
-        }
-}
-```
-
-Pass the `PickerItem` list to the `BubblePicker`
-
-Kotlin
-```kotlin
-val titles = resources.getStringArray(R.array.countries)
-val colors = resources.obtainTypedArray(R.array.colors)
-val images = resources.obtainTypedArray(R.array.images)
-
-picker.datas = ArrayList<PickerItem>()
-
-//or
-
-picker.adapter = object : BubblePickerAdapter {
-
-            override val totalCount = titles.size
-
-            override fun getItem(position: Int): PickerItem {
-                return PickerItem().apply {
-                    title = titles[position]
-                    gradient = BubbleGradient(colors.getColor((position * 2) % 8, 0),
-                            colors.getColor((position * 2) % 8 + 1, 0), BubbleGradient.VERTICAL)
-                    typeface = mediumTypeface
-                    textColor = ContextCompat.getColor(this@DemoActivity, android.R.color.white)
-                    backgroundImage = ContextCompat.getDrawable(this@DemoActivity, images.getResourceId(position, 0))
-                }
-            }
-}
-```
-
-Java
-```java
-final String[] titles = getResources().getStringArray(R.array.countries);
-final TypedArray colors = getResources().obtainTypedArray(R.array.colors);
-final TypedArray images = getResources().obtainTypedArray(R.array.images);
-
-picker.setDatas(new ArrayList<PickerItem>());
-
-//or
-
-picker.setAdapter(new BubblePickerAdapter() {
-            @Override
-            public int getTotalCount() {
-                return titles.length;
-            }
-
-            @NotNull
-            @Override
-            public PickerItem getItem(int position) {
-                PickerItem item = new PickerItem();
-                item.setTitle(titles[position]);
-                item.setGradient(new BubbleGradient(colors.getColor((position * 2) % 8, 0),
-                        colors.getColor((position * 2) % 8 + 1, 0), BubbleGradient.VERTICAL));
-                item.setTypeface(mediumTypeface);
-                item.setTextColor(ContextCompat.getColor(DemoActivity.this, android.R.color.white));
-                item.setBackgroundImage(ContextCompat.getDrawable(DemoActivity.this, images.getResourceId(position, 0)));
-                return item;
-            }
-});
 ```
 
 Specify the `BubblePickerListener` to get notified about events
