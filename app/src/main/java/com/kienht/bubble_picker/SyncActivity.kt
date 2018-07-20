@@ -2,6 +2,7 @@ package com.kienht.bubble_picker
 
 import android.content.res.TypedArray
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 import com.kienht.bubblepicker.BubblePickerListener
@@ -36,11 +37,13 @@ class SyncActivity : AppCompatActivity() {
                     gradient = BubbleGradient(colors.getColor((position * 2) % 8, 0),
                             colors.getColor((position * 2) % 8 + 1, 0), BubbleGradient.VERTICAL)
                     imgUrl = "http://sohanews.sohacdn.com/2018/4/11/hat9-1523392964439195574255.jpg"
+//                    imgDrawable = ContextCompat.getDrawable(this@SyncActivity, images.getResourceId(position, 0))
+
                 }
             }
         }
 
-        picker.bubbleSize = 10
+        picker.bubbleSize = 5
         picker.listener = object : BubblePickerListener {
             override fun onBubbleDeselected(item: PickerItem) {
                 toast("Unselected: " + item.title!!)

@@ -5,14 +5,13 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.opengl.GLES20.*
 import android.opengl.Matrix
-import android.support.v4.content.ContextCompat
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
 import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.target.Target.SIZE_ORIGINAL
 import com.kienht.bubblepicker.model.BubbleGradient
 import com.kienht.bubblepicker.model.PickerItem
 import com.kienht.bubblepicker.physics.CircleBody
@@ -43,11 +42,16 @@ data class Item(val context: WeakReference<Context>, val pickerItem: PickerItem,
 
     private var isVisible = true
         get() = circleBody.isVisible
+
     private var texture: Int = 0
+
     private var imageTexture: Int = 0
+
     private val currentTexture: Int
         get() = if (circleBody.increased || circleBody.isIncreasing) imageTexture else texture
+
     private val bitmapSize = 256f
+
     private val gradient: LinearGradient?
         get() {
             return pickerItem.gradient?.let {
@@ -77,9 +81,9 @@ data class Item(val context: WeakReference<Context>, val pickerItem: PickerItem,
     private fun createBitmap(isSelected: Boolean): Bitmap {
         var bitmap = if (!TextUtils.isEmpty(pickerItem.imgUrl) && pickerItem.isUseImgUrl) {
             Glide.with(context.get())
-                    .load(pickerItem.imgUrl)
+                    .load("https://avatar-nct.nixcdn.com/playlist/2017/04/09/9/8/9/4/1491713063467_500.jpg")
                     .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(bitmapSize.toInt() / 2, bitmapSize.toInt() / 2)
                     .get()
         } else {
@@ -118,7 +122,7 @@ data class Item(val context: WeakReference<Context>, val pickerItem: PickerItem,
         val paint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
 
             color = if (pickerItem.textColor == null) {
-                ContextCompat.getColor(context.get()!!, android.R.color.white)
+                Color.parseColor("#ffffff")
             } else {
                 pickerItem.textColor!!
             }
