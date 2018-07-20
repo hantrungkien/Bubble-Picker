@@ -44,7 +44,12 @@ mBubblePicker.setAlwaysSelected(true);
 ```
 - [Android-Universal-Image-Loader](https://github.com/nostra13/Android-Universal-Image-Loader): Load image from url
 
-Please review Activity in the Sample for both cases Sync Data or Async Data
+## Please review Activity in the Sample for both cases 
+
+[Sync Data](https://github.com/hantrungkien/Bubble-Picker/blob/master/app/src/main/java/com/kienht/bubble_picker/SyncActivity.kt)
+
+
+[Async Data](https://github.com/hantrungkien/Bubble-Picker/blob/master/app/src/main/java/com/kienht/bubble_picker/AsyncActivity.kt)
 
 ```
 
